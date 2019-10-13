@@ -62,3 +62,5 @@ else:
     decr = (c**d) % n
     print("\n Decrypted Message = ", decr)
 
+# For use with plain text:
+#  https://stackoverflow.com/questions/12625627/python3-convert-unicode-string-to-int-representation
