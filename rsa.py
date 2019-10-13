@@ -35,6 +35,8 @@ def gcdExtended(r1, r2):
 # Answer is Prime factorization - fundamental theorem of arithmetic.
 # It says that for any number greate than 1, there is only one unique combination of the product of two prime numbers to obtain the number.  
 
+#example: p = 61, q = 53, e = 17, m = 42
+
 message = int(input ("\nEnter the message you want to encrypt: "))
 
 p = int(input("\nEnter the first large prime: "))
@@ -45,6 +47,7 @@ n = p * q
 phi = (p-1)*(q-1)
 
 #we calculate d as the inverse of e mod phi = 1
+#phi must not share a factor with e
 d = gcdExtended(phi,e)
 
 if(d == -1):
