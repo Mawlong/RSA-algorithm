@@ -37,11 +37,30 @@ def gcdExtended(r1, r2):
 
 #example: p = 61, q = 53, e = 17, m = 42
 
-message = int(input ("\nEnter the message you want to encrypt: "))
+message = (input ("\nEnter the message you want to encrypt: "))
 
-p = int(input("\nEnter the first large prime: "))
-q = int(input("\nEnter the second large prime: "))
-e = int(input("\nEnter the value of e: "))
+a = []
+
+for i in range(len(message)):
+    a.append(ord(message[i]))
+
+#print(a)
+
+#p = int(input("\nEnter the first large prime: "))
+
+#p = 179081209581970862429224601857663215147261277689339968201876099196179138805428517493003072088303838668008999097748715006099950947050826721959841869068064396159473805318997606568463513029886212749711990235765643685421549116454866520627960772589158098824417862059378236036266593742758708452800946208862216798967
+
+#q = int(input("\nEnter the second large prime: "))
+
+#q = 146650523061314944919205116005245160985944837646537472972628127836877818778339906010977989972360010244250231635742003565047699276836901991052527418585623414264604188199530379632534167679523668098684372873657858229446080129227778193597570777394103360591709605857965734217008564333135626220959698114795871505623
+
+p = 61
+
+q = 53
+
+#e = int(input("\nEnter the value of e: "))
+
+e = 17
 
 n = p * q
 phi = (p-1)*(q-1)
@@ -54,13 +73,23 @@ if(d == -1):
     print("\nWrong selection of parameneters")
 
 else:
+    print("\nEncrpyted Message = ", end = "")
+    c = []
     #Encryption
-    c = (message**e) % n
-    print("\n Encrpyted Message = ", c)
+    #c = (a[0]**e) % n
+    for i in range(0, len(a)):
+        c.append((a[i]**e)%n)
+        print(c[i], end = "")
+        
 
     #Decryption
-    decr = (c**d) % n
-    print("\n Decrypted Message = ", decr)
+    #decr = (c**d) % n
+    decr = []
+    for i in range(0, len(c)):
+        decr.append(chr((c[i]**d)%n))
+    #print("\n Decrypted Message = ", decr)
 
-# For use with plain text:
-#  https://stackoverflow.com/questions/12625627/python3-convert-unicode-string-to-int-representation
+    string = ""
+    for i in range(0, len(decr)):
+        string = string + decr[i]
+    print("\nDecrypted Message: ", string)
