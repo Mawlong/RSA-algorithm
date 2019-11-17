@@ -1,3 +1,21 @@
+# RSA algorithm
+# author: Leon Patrick Mawlong, Tanuj Chakraborty
+# NIT Meghalaya: Network Security and Cryptography Assignment 
+
+# RSA uses a one way trapdoor function (there is no way to undo the encryption unless the trapdoor is known. Here the factors of 'n' is the trap door)
+# However n is public, why is it difficult to find it? 
+# Answer: Prime factorization - fundamental theorem of arithmetic.It says that for any number greate than 1, there is only one unique combination of the product of two prime numbers to obtain the number.
+#Public key: e and n
+#Private key: d
+
+import gmpy2
+import random
+from Crypto.Util import number
+import time
+
+start = time.time()
+
+# Making use of Extrended GCD Euclidean algorithm to find weather inverse exists
 def gcdExtended(r1, r2):
     
     s1 = t2 = 1
@@ -21,75 +39,45 @@ def gcdExtended(r1, r2):
         else:
             return t1
     else:
-        print("Inverse does not exist")
+        #Inverse does not exist
         return -1
 
+#Encryption of the plaintext using public keys e and n
+def encrypt(e,n, plaintext):
+    cipher = [gmpy2.powmod(ord(char), e, n) for char in plaintext]
+    return cipher
+
+#Decryption of the ciphertext using private keys d
+def decrypt(d,n, ciphertext):
+    decipher = [chr(gmpy2.powmod(char, d, n)) for char in ciphertext]
+    return ''.join(map(lambda x: str(x), decipher))
 
 
-#Public key are variables 'e' and 'n'
-#Private key is variable d
+message = str(input ("\nEnter the message you want to encrypt:\n"))
 
-#RSA uses a one way trapdoor function (there is no way to undo the encryption unless the trapdoor is known. Here the factors of 'n' is the trap door)
-
-# However is n is public, why is it difficult to find it? 
-# Answer is Prime factorization - fundamental theorem of arithmetic.
-# It says that for any number greate than 1, there is only one unique combination of the product of two prime numbers to obtain the number.  
-
-#example: p = 61, q = 53, e = 17, m = 42
-
-message = (input ("\nEnter the message you want to encrypt: "))
-
-a = []
-
-for i in range(len(message)):
-    a.append(ord(message[i]))
-
-#print(a)
-
-#p = int(input("\nEnter the first large prime: "))
-
-#p = 179081209581970862429224601857663215147261277689339968201876099196179138805428517493003072088303838668008999097748715006099950947050826721959841869068064396159473805318997606568463513029886212749711990235765643685421549116454866520627960772589158098824417862059378236036266593742758708452800946208862216798967
-
-#q = int(input("\nEnter the second large prime: "))
-
-#q = 146650523061314944919205116005245160985944837646537472972628127836877818778339906010977989972360010244250231635742003565047699276836901991052527418585623414264604188199530379632534167679523668098684372873657858229446080129227778193597570777394103360591709605857965734217008564333135626220959698114795871505623
-
-p = 61
-
-q = 53
-
-#e = int(input("\nEnter the value of e: "))
-
-e = 17
+#Generating prime numbers 1024 bit in size
+p = number.getPrime(1024)
+q = number.getPrime(1024)
 
 n = p * q
+
 phi = (p-1)*(q-1)
 
-#we calculate d as the inverse of e mod phi = 1
-#phi must not share a factor with e
+e = random.randint(1,phi)
 d = gcdExtended(phi,e)
 
-if(d == -1):
-    print("\nWrong selection of parameneters")
+#incase inverse does not exist between phi and e, we generate a new e and perform the test
+while(d==-1):
+    e = random.randint(1,phi)
+    d = gcdExtended(phi,e)
 
-else:
-    print("\nEncrpyted Message = ", end = "")
-    c = []
-    #Encryption
-    #c = (a[0]**e) % n
-    for i in range(0, len(a)):
-        c.append((a[i]**e)%n)
-        print(c[i], end = "")
-        
+print("\n\nPublic key:\ne = ", e,"\nn =", n )
+print("\n\nPrivate key:\nd = ", d)
 
-    #Decryption
-    #decr = (c**d) % n
-    decr = []
-    for i in range(0, len(c)):
-        decr.append(chr((c[i]**d)%n))
-    #print("\n Decrypted Message = ", decr)
+cipher_text = encrypt(e,n, message)
+print("\nEncrypted message: \n" + ''.join(map(lambda x: str(x), cipher_text)))
+print("\n\n\nDecrypted message:\n" + (decrypt(d,n, cipher_text)))
 
-    string = ""
-    for i in range(0, len(decr)):
-        string = string + decr[i]
-    print("\nDecrypted Message: ", string)
+#To print time taken
+end = time.time()
+print("\n\nTime taken: ", (end - start))
